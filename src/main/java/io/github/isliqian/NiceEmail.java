@@ -1,4 +1,4 @@
-package io.github.isliqian.ne;
+package io.github.isliqian;
 
 
 import javax.activation.DataHandler;
@@ -148,8 +148,9 @@ public class NiceEmail {
 
 
 
-    public NiceEmail verificationCode(String verificationCode)  {
-        this.text="您的验证码为:"+verificationCode;
+    public NiceEmail verificationCode(int size,String[] type)  {
+        VerificationCode.code(size,type);
+        this.text="您的验证码为:"+ VerificationCode.code(size,type);
         return this;
 
     }

@@ -1,4 +1,4 @@
-package io.github.isliqian.ne;
+package io.github.isliqian;
 
 
 
@@ -7,6 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 import javax.mail.MessagingException;
 import java.io.File;
+
+import static io.github.isliqian.VerificationCode.verificationCodeArrary;
 /**
  * Created by LiQian_Nice on 2018/3/13
  */
@@ -15,7 +17,7 @@ public class NiceEmailTest {
 
     @Before
     public void before(){
-        // 配置，一次即可
+        // 配置，一次即可：邮箱与密码
         NiceEmail.config(NiceEmail.SMTP_QQ(), "51103942@qq.com", "jtmoybnwknrnbjha");
     }
 
@@ -41,7 +43,8 @@ public class NiceEmailTest {
         NiceEmail.subject("这是一封测试HTML邮件")
                 .from("LqNice")
                 .to("51103942@qq.com")
-                .html("<h1 font=red>信件内容</h1>")
+                //html内容即可
+                .html("<h1>信件内容</h1>")
                 .send();
     }
 
@@ -55,7 +58,10 @@ public class NiceEmailTest {
                 .from("LqNice")
                 .to("51103942@qq.com")
                 .html("<h1 font=red>信件内容</h1>")
+                //附近的路径，以及名称
                 .attach(new File("/Users/DELL/Pictures/Saved Pictures/000028.jpg"), "测试图片.jpeg")
+                //名称可以不设置
+                //.attach(new File("/Users/DELL/Pictures/Saved Pictures/000028.jpg"))
                 .send();
     }
     /**
@@ -67,7 +73,12 @@ public class NiceEmailTest {
         NiceEmail.subject("来自远方的验证码")
                   .from("LqNice")
                   .to("51103942@qq.com")
-                  .verificationCode(VerificationCode.number(6))
+                   //验证码长度为6，如果类型为null,验证码类型为数字英文混合验证码
+                  .verificationCode(6,null)
+                  //支持纯英文验证码
+                  //.verificationCode(4,verificationEnglishArrary)
+                  //如果验证码位数不配置，则按照6位验证码发送
+                  //.verificationCode(0,verificationNumberArrary)
                   .send();
 
     }
@@ -82,9 +93,9 @@ public class NiceEmailTest {
         NiceEmail.subject("来自远方的验证码")
                 .from("LqNice")
                 .to("51103942@qq.com")
-                .verificationCode(VerificationCode.number(6))
-                //定时发送为20点20分，发送完成，自动停止。
-                .waitTimeSend(20,36);
+                .verificationCode(6,verificationCodeArrary)
+                //定时发送为21点51分，发送完成，自动停止。
+                .waitTimeSend(21,51);
     }
 
 
