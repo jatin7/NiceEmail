@@ -6,10 +6,9 @@ import javax.activation.FileDataSource;
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by LiQian_Nice on 2018/3/13
@@ -18,6 +17,7 @@ public class NiceEmail {
 
     private static Session session;
     private static String  user;
+    private static Timer timer;
     private MimeMessage msg;
     private String  text;
     private String html;
@@ -147,7 +147,8 @@ public class NiceEmail {
     }
 
 
-    public NiceEmail verificationCode(String verificationCode) throws MessagingException {
+
+    public NiceEmail verificationCode(String verificationCode)  {
         this.text="您的验证码为:"+verificationCode;
         return this;
 
@@ -185,7 +186,7 @@ public class NiceEmail {
             // TEXT ONLY
             cover = new MimeMultipart("mixed");
             cover.addBodyPart(textPart());
-        } else if (text == null && html != null) {
+        }else if (text == null && html != null) {
             // HTML ONLY
             cover = new MimeMultipart("mixed");
             cover.addBodyPart(htmlPart());
@@ -226,6 +227,42 @@ public class NiceEmail {
         MimeBodyPart bodyPart = new MimeBodyPart();
         bodyPart.setContent(html, "text/html; charset=utf-8");
         return bodyPart;
+    }
+    // 获取应该在多少秒后
+    public static long getTaskTime(int shi,int fen) {
+        DateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
+        // 当前时分秒字符串切成数组
+        String[] sArr = sdf.format(new Date()).split(":");
+        // 从数组取值换算成 秒计数值
+        long currentMiao = (Integer.parseInt(sArr[0]) *60*60) + (Integer.parseInt(sArr[1]) *60)
+                + Integer.parseInt(sArr[2]);
+        // 设定的执行时间换算成 秒计数值
+        long runTime = (shi*60*60 + fen*60);
+
+        if (currentMiao <= runTime) {
+            return runTime - currentMiao;
+        } else {
+            return currentMiao + (24*60*60) - (currentMiao - runTime);
+        }
+    }
+    public  void waitTimeSend(int shi,int fen) {
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            // 把run方法里的内容换成要运行的代码
+            public void run() {
+                try {
+                    send();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    System.out.println("当前的系统时间为：" + sdf.format(new Date()));
+                    timer.cancel();
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, getTaskTime(shi,fen) *1000, 24*60*60*1000);
+
     }
 
 }

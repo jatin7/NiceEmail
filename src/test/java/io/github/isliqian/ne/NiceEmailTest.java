@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import javax.mail.MessagingException;
 import java.io.File;
-
 /**
  * Created by LiQian_Nice on 2018/3/13
  */
@@ -73,9 +72,21 @@ public class NiceEmailTest {
 
     }
 
-    @Test
-    public void testVerifcationCode(){
-        System.out.println(VerificationCode.letter(9));
+    /**
+     * 测试定时发送邮件
+     * @param args
+     * @throws MessagingException
+     */
+    public static void  main(String[] args) throws MessagingException {
+        NiceEmail.config(NiceEmail.SMTP_QQ(), "51103942@qq.com", "jtmoybnwknrnbjha");
+        NiceEmail.subject("来自远方的验证码")
+                .from("LqNice")
+                .to("51103942@qq.com")
+                .verificationCode(VerificationCode.number(6))
+                //定时发送为20点20分，发送完成，自动停止。
+                .waitTimeSend(20,36);
     }
+
+
 
 }

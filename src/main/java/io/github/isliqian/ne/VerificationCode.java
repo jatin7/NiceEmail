@@ -28,6 +28,9 @@ public class VerificationCode {
      * @return
      */
     public static String number(int size) {
+        if (size==0){
+            size=6;
+        }
         random = new Random();
         //此处是生成验证码的核心了，利用一定范围内的随机数做为验证码数组的下标，循环组成我们需要长度的验证码，做为页面输入验证、邮件、短信验证码验证都行
         for (int i = 0; i < size; i++) {
@@ -43,6 +46,9 @@ public class VerificationCode {
      * @return
      */
     public static String letter(int size){
+        if (size==0){
+            size=6;
+        }
         random = new Random();
         //此处是生成验证码的核心了，利用一定范围内的随机数做为验证码数组的下标，循环组成我们需要长度的验证码，做为页面输入验证、邮件、短信验证码验证都行
         for (int i = 0; i < size; i++) {
@@ -57,6 +63,9 @@ public class VerificationCode {
      * @return
      */
     public static String digital(int size){
+        if (size==0){
+            size=6;
+        }
         random = new Random();
         //此处是生成验证码的核心了，利用一定范围内的随机数做为验证码数组的下标，循环组成我们需要长度的验证码，做为页面输入验证、邮件、短信验证码验证都行
         for (int i = 0; i < size; i++) {
