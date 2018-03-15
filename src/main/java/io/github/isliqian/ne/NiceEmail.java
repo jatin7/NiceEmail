@@ -1,9 +1,14 @@
 package io.github.isliqian.ne;
 
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.mail.*;
 import javax.mail.internet.*;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -15,6 +20,9 @@ public class NiceEmail {
     private static String  user;
     private MimeMessage msg;
     private String  text;
+    private String html;
+
+    private List<MimeBodyPart> attachments = new ArrayList<MimeBodyPart>();
     public static Properties defaultConfig() {
         //1.创建连接对象，连接到邮箱服务器
         Properties props=new Properties();
@@ -97,7 +105,7 @@ public class NiceEmail {
      * @return
      * @throws MessagingException
      */
-    public NiceEmail from(String nickName) throws MessagingException {
+    public  NiceEmail from(String nickName) throws MessagingException {
         return from(nickName, user);
     }
 
@@ -133,22 +141,90 @@ public class NiceEmail {
         return this;
     }
 
+    public NiceEmail html(String html) {
+        this.html = html;
+        return this;
+    }
 
+
+    public NiceEmail verificationCode(String verificationCode) throws MessagingException {
+        this.text="您的验证码为:"+verificationCode;
+        return this;
+
+    }
+
+    public NiceEmail attach(File file) throws MessagingException {
+        attachments.add(createAttachment(file, null));
+        return this;
+    }
+
+    public NiceEmail attach(File file, String fileName) throws MessagingException {
+        attachments.add(createAttachment(file, fileName));
+        return this;
+    }
+
+    private MimeBodyPart createAttachment(File file, String fileName) throws MessagingException {
+        MimeBodyPart   attachmentPart = new MimeBodyPart();
+        FileDataSource fds            = new FileDataSource(file);
+        attachmentPart.setDataHandler(new DataHandler(fds));
+        try {
+            attachmentPart.setFileName(null == fileName ? MimeUtility.encodeText(fds.getName()) : MimeUtility.encodeText(fileName));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return attachmentPart;
+    }
 
     public void send() throws MessagingException {
-        if (text == null)
+        if (text == null&& html == null)
             throw new NullPointerException("At least one context has to be provided: Text");
         MimeMultipart cover;
-        cover = new MimeMultipart("mixed");
-        cover.addBodyPart(textPart());
+        boolean       usingAlternative = false;
+        boolean       hasAttachments   = attachments.size() > 0;
+        if (text != null && html == null) {
+            // TEXT ONLY
+            cover = new MimeMultipart("mixed");
+            cover.addBodyPart(textPart());
+        } else if (text == null && html != null) {
+            // HTML ONLY
+            cover = new MimeMultipart("mixed");
+            cover.addBodyPart(htmlPart());
+        }else {
+            // HTML + TEXT
+            cover = new MimeMultipart("alternative");
+            cover.addBodyPart(textPart());
+            cover.addBodyPart(htmlPart());
+            usingAlternative = true;
+        }
+        MimeMultipart content = cover;
+        if (usingAlternative && hasAttachments) {
+            content = new MimeMultipart("mixed");
+            content.addBodyPart(toBodyPart(cover));
+        }
+
+        for (MimeBodyPart attachment : attachments) {
+            content.addBodyPart(attachment);
+        }
         msg.setSentDate(new Date());
         msg.setContent(cover);
         Transport.send(msg);
     }
 
+    private MimeBodyPart toBodyPart(MimeMultipart cover) throws MessagingException {
+        MimeBodyPart wrap = new MimeBodyPart();
+        wrap.setContent(cover);
+        return wrap;
+    }
+
     private MimeBodyPart textPart() throws MessagingException {
         MimeBodyPart bodyPart = new MimeBodyPart();
         bodyPart.setText(text);
+        return bodyPart;
+    }
+
+    private MimeBodyPart htmlPart() throws MessagingException {
+        MimeBodyPart bodyPart = new MimeBodyPart();
+        bodyPart.setContent(html, "text/html; charset=utf-8");
         return bodyPart;
     }
 
