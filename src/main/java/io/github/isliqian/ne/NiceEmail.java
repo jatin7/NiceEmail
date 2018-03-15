@@ -1,13 +1,10 @@
 package io.github.isliqian.ne;
 
 
-import com.sun.mail.util.MailSSLSocketFactory;
-
-import java.security.GeneralSecurityException;
-import java.util.Date;
-import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.*;
+import java.util.Date;
+import java.util.Properties;
 
 /**
  * Created by LiQian_Nice on 2018/3/13
@@ -46,13 +43,9 @@ public class NiceEmail {
      *
      * @return
      */
-    public static Properties SMTP_QQ() throws GeneralSecurityException {
+    public static Properties SMTP_QQ()  {
         Properties props = defaultConfig();
         props.put("mail.smtp.host", "smtp.qq.com");
-        //QQ邮箱需要下面这段代码，163邮箱不需要
-        MailSSLSocketFactory sf = new MailSSLSocketFactory();
-        sf.setTrustAllHosts(true);
-        props.put("mail.smtp.ssl.socketFactory", sf);
         return props;
     }
 
@@ -144,7 +137,7 @@ public class NiceEmail {
 
     public void send() throws MessagingException {
         if (text == null)
-            throw new NullPointerException("At least one context has to be provided: Text or Html");
+            throw new NullPointerException("At least one context has to be provided: Text");
         MimeMultipart cover;
         cover = new MimeMultipart("mixed");
         cover.addBodyPart(textPart());
