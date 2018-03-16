@@ -21,6 +21,7 @@ public class NiceEmail {
     private MimeMessage msg;
     private String  text;
     private String html;
+    public static String code;
 
     private List<MimeBodyPart> attachments = new ArrayList<MimeBodyPart>();
     public static Properties defaultConfig() {
@@ -149,8 +150,8 @@ public class NiceEmail {
 
 
     public NiceEmail verificationCode(int size,String[] type)  {
-        VerificationCode.code(size,type);
-        this.text="您的验证码为:"+ VerificationCode.code(size,type);
+        this.code = VerificationCode.code(size,type);
+        this.text="您的验证码为:"+ code;
         return this;
 
     }
