@@ -6,6 +6,8 @@ import javax.activation.FileDataSource;
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -21,9 +23,48 @@ public class NiceEmail {
     private MimeMessage msg;
     private String  text;
     private String html;
+    private static String type;
+    private static String username;
+    private static String password;
     public static String code;
 
     private List<MimeBodyPart> attachments = new ArrayList<MimeBodyPart>();
+
+
+
+    public NiceEmail(){
+
+    }
+    public static NiceEmail inUse(Class c) throws InvocationTargetException, IllegalAccessException {
+        NiceEmail niceEmail=new NiceEmail();
+        AnnNiceConfig config= (AnnNiceConfig) c.getAnnotation(AnnNiceConfig.class);
+        System.out.println(config);
+        for (Method method : config.annotationType().getDeclaredMethods()) {
+            if (!method.isAccessible()) {
+                method.setAccessible(true);
+            }
+            Object invoke = method.invoke(config);
+            if ("type".equals(method.getName())) {
+                type = (String) invoke;
+            }else if ("username".equals(method.getName())){
+                username=(String)invoke;
+            }else if ("password".equals(method.getName())){
+                password=(String)invoke;
+            }
+            System.out.println("invoke methd " + method.getName() + " result:" + invoke);
+            if (invoke.getClass().isArray()) {
+                Object[] temp = (Object[]) invoke;
+                for (Object o : temp) {
+                    System.out.println(o);
+                }
+            }
+        }
+        if (type.equals("SMTP_QQ")){
+            config(NiceEmail.SMTP_QQ(),username,password);
+        }
+        return niceEmail;
+
+    }
     public static Properties defaultConfig() {
         //1.创建连接对象，连接到邮箱服务器
         Properties props=new Properties();

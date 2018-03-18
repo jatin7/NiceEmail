@@ -105,7 +105,22 @@ maven坐标
                            .waitTimeSend(21,51);
                }
            
-           
+### 新特性 
+添加注解 **@AnnNiceConfig** + **@AnnNiceEmail** 
+    
+    @AnnNiceConfig(type = "SMTP_QQ",
+            username = "51103942@qq.com",
+            password = "jtmoybnwknrnbjha")
+    public class TestEmail {
+        @Test
+        @AnnNiceEmail(inUse = TestEmail.class,
+                subject = "测试注解邮件",
+                from = "LqNice",
+                to="51103942@qq.com")
+        public void sendEmail(){
+            trackUseCases(TestEmail.class);
+        }
+                 
 ###[个人博客](www.imqian.top)
 作者 51103942@qq.com             
           
