@@ -10,18 +10,42 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface AnnNiceEmail {
-
+    /**
+     * 被使用
+     * @return
+     */
     Class inUse();
+
+    /**
+     * 主题
+     * @return
+     */
     String subject();
+
+    /**
+     * 来自谁的邮件
+     * @return
+     */
     String from();
+
+    /**
+     * 发送给某人的邮箱
+     * @return
+     */
     String to();
 
-    @Deprecated
-    String verificationCode() default "no verificationCode";
 
+    /**
+     * 文字
+     * @return
+     */
     @Deprecated
     String text() default "no text";
 
+    /**
+     * 超文本
+     * @return
+     */
     @Deprecated
     String html() default "no html";
 }

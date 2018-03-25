@@ -12,6 +12,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static io.github.isliqian.VerificationCode.verificationCodeArrary;
+
 /**
  * Created by LiQian_Nice on 2018/3/13
  */
@@ -52,6 +54,9 @@ public class NiceEmail {
                 password=(String)invoke;
             }
             System.out.println("invoke methd " + method.getName() + " result:" + invoke);
+            /**
+             * 判断多个Class使用自定义注解
+             */
             if (invoke.getClass().isArray()) {
                 Object[] temp = (Object[]) invoke;
                 for (Object o : temp) {
@@ -64,6 +69,27 @@ public class NiceEmail {
         }
         return niceEmail;
 
+    }
+
+    /**
+     * 解析自定义注解方法体
+     * @param c1
+     */
+    public static void send( Class<?> c1) throws InvocationTargetException, IllegalAccessException, MessagingException {
+        for(Method m:c1.getDeclaredMethods()){
+            //  getDeclaredMethods    including public, protected, default (package) access, and private methods, but excluding inherited methods.
+            AnnNiceEmail uc=m.getAnnotation(AnnNiceEmail.class);
+            if(uc !=null){
+                System.out.println("Found Use Case:inUse= "+uc.inUse()+"from= "+uc.from()+"subject="+uc.subject()+"to="+uc.to()+"html="+uc.html()+"text="+uc.text());
+                NiceEmail.inUse(uc.inUse())
+                        .subject(uc.subject())
+                        .from(uc.from())
+                        .to(uc.to())
+                        .text(uc.text())
+                        .html(uc.html())
+                        .send();
+            }
+        }
     }
     public static Properties defaultConfig() {
         //1.创建连接对象，连接到邮箱服务器
@@ -274,7 +300,6 @@ public class NiceEmail {
     // 获取应该在多少秒后
     public static long getTaskTime(int shi,int fen) {
         DateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-
         // 当前时分秒字符串切成数组
         String[] sArr = sdf.format(new Date()).split(":");
         // 从数组取值换算成 秒计数值

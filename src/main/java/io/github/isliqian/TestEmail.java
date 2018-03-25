@@ -6,10 +6,9 @@ import org.junit.Test;
 import javax.mail.MessagingException;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
 
 
+import static io.github.isliqian.NiceEmail.send;
 import static io.github.isliqian.VerificationCode.verificationCodeArrary;
 
 /**
@@ -19,25 +18,18 @@ import static io.github.isliqian.VerificationCode.verificationCodeArrary;
         username = "51103942@qq.com",
         password = "jtmoybnwknrnbjha")
 public class TestEmail {
+
     @Test
     @AnnNiceEmail(inUse = TestEmail.class,
             subject = "测试注解邮件",
             from = "LqNice",
-            to="51103942@qq.com")
-    public void sendEmail(){
-        trackUseCases(TestEmail.class);
+            to="51103942@qq.com",
+            text = "textAnn",//text与html不能同时显示
+            html = "<h1>aha</h1>")
+    public void sendEmail() throws InvocationTargetException, IllegalAccessException, MessagingException {
+        send(TestEmail.class);
     }
-    public static void trackUseCases( Class<?> c1){
-        for(Method m:c1.getDeclaredMethods()){
-            //  getDeclaredMethods    including public, protected, default (package) access, and private methods, but excluding inherited methods.
-            AnnNiceEmail uc=m.getAnnotation(AnnNiceEmail.class);
-            if(uc !=null){
-                System.out.println("Found Use Case:inUse= "+uc.inUse()+"from= "+uc.from()+"subject="+uc.subject()+"to="+uc.to()+"html="+uc.html()+"text="+uc.text()+"verificationCode="+uc.verificationCode());
 
-
-            }
-        }
-    }
    /* @Before
     public void before() {
         NiceEmail.config(NiceEmail.SMTP_QQ(), "51103942@qq.com", "jtmoybnwknrnbjha");
@@ -49,7 +41,8 @@ public class TestEmail {
                 .subject("您的注册验证码邮件")
                 .from("LqNice")
                 .to("51103942@qq.com")
-                .verificationCode(4, verificationCodeArrary)
+                .text ( "textAnn")//text与html不能同时显示
+                 .html ("<h1>aha</h1>")
                 .send();
     System.out.println(NiceEmail.code);
     }

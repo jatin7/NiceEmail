@@ -8,6 +8,7 @@
 - [x] 支持发送HTML/附件
 - [x] 支持异步发送
 - [x] 支持定时发送邮件
+- [x] 自定义注解，更加简单方便
 ## 如何使用
 
 maven坐标
@@ -106,7 +107,7 @@ maven坐标
                }
            
 ### 新特性 
-添加注解 **@AnnNiceConfig** + **@AnnNiceEmail** 
+自定义注解如何使用 **@AnnNiceConfig** + **@AnnNiceEmail** 
     
     @AnnNiceConfig(type = "SMTP_QQ",
             username = "51103942@qq.com",
@@ -114,13 +115,15 @@ maven坐标
     public class TestEmail {
         @Test
         @AnnNiceEmail(inUse = TestEmail.class,
-                subject = "测试注解邮件",
+                subject = "测试 注解邮件",
                 from = "LqNice",
                 to="51103942@qq.com")
         public void sendEmail(){
             trackUseCases(TestEmail.class);
         }
-                 
+        
+###发现bug
+* html与text不能同时显示。。。                 
 ###[个人博客](www.imqian.top)
 作者 51103942@qq.com             
           
