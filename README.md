@@ -3,11 +3,9 @@
 ## 特性
 - [x] 简洁的邮件发送API
 - [x] 支持自定义发件人昵称
-- [x] 支持各种邮箱验证
-- [ ] 提供各种发送邮箱模板样式及使用?
+- [x] 支持邮箱发送验证码
 - [x] 支持发送HTML/附件
 - [x] 支持异步发送
-- [x] 支持定时发送邮件
 - [x] 自定义注解，更加简单方便
 ## 如何使用
 
@@ -91,20 +89,7 @@ maven坐标
            
                }
            
-               /**
-                * 测试定时发送邮件
-                * @param args
-                * @throws MessagingException
-                */
-               public static void  main(String[] args) throws MessagingException {
-                   NiceEmail.config(NiceEmail.SMTP_QQ(), "51103942@qq.com", "jtmoybnwknrnbjha");
-                   NiceEmail.subject("来自远方的验证码")
-                           .from("LqNice")
-                           .to("51103942@qq.com")
-                           .verificationCode(6,verificationCodeArrary)
-                           //定时发送为21点51分，发送完成，自动停止。
-                           .waitTimeSend(21,51);
-               }
+           
            
 ### 新特性 
 自定义注解如何使用 **@AnnNiceConfig** + **@AnnNiceEmail** 
