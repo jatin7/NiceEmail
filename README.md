@@ -1,4 +1,4 @@
-## NiceEmail
+## NiceEmail - 3.0.0
 支持各种功能的邮件发送库
 ## 特性
 - [x] 简洁的邮件发送API
@@ -14,7 +14,7 @@ maven坐标
     <dependency>
         <groupId>io.github.isliqian</groupId>
         <artifactId>NiceEmail</artifactId>
-        <version>2.0.0</version>
+        <version>3.0.0</version>
     </dependency>
 
 样例
