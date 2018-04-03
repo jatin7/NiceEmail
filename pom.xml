@@ -7,7 +7,7 @@
     <groupId>io.github.isliqian</groupId>
     <artifactId>NiceEmail</artifactId>
     <url>https://github.com/isliqian/NiceEmail</url>
-    <version>2.0.0</version>
+    <version>3.0.0</version>
     <packaging>jar</packaging>
 
     <licenses>
@@ -34,7 +34,7 @@
             scm:git:https://github.com/isliqian/NiceEmail.git
         </developerConnection>
         <url>git@github.com:isliqian/NiceEmail.git</url>
-        <tag>2.0.0</tag>
+        <tag>3.0.0</tag>
     </scm>
 
     <properties>
@@ -49,11 +49,7 @@
             <artifactId>mail</artifactId>
             <version>1.4.7</version>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>RELEASE</version>
-        </dependency>
+
 
 
     </dependencies>

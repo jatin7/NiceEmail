@@ -109,19 +109,33 @@ maven坐标
 ### 新特性 
 自定义注解如何使用 **@AnnNiceConfig** + **@AnnNiceEmail** 
     
+    
     @AnnNiceConfig(type = "SMTP_QQ",
-            username = "51103942@qq.com",
-            password = "jtmoybnwknrnbjha")
-    public class TestEmail {
-        @Test
-        @AnnNiceEmail(inUse = TestEmail.class,
-                subject = "测试 注解邮件",
-                from = "LqNice",
-                to="51103942@qq.com")
-        public void sendEmail(){
-            trackUseCases(TestEmail.class);
-        }
-        
+         username = "51103942@qq.com",
+         password = "jtmoybnwknrnbjha")
+    public class TestAnnEmail {
+ 
+     @Test
+     @AnnNiceEmail(subject = "测试注解发送文本邮件",
+             from = "LqNice",
+             to="51103942@qq.com",
+             text = "text Ann text")
+     public void sendTextEmail() throws InvocationTargetException, IllegalAccessException, MessagingException {
+         send(TestAnnEmail.class);
+     }
+ 
+ 
+ 
+     @Test
+     @AnnNiceEmail(subject = "测试注解发送Html邮件",
+             from = "LqNice",
+             to="51103942@qq.com",
+             html = "<h1>test Ann Html</h1>")
+     public void sendHtmlEmail() throws IllegalAccessException, MessagingException, InvocationTargetException {
+        send(TestAnnEmail.class);
+ 
+     }
+    }
 ###发现bug
 * html与text不能同时显示。。。                 
 ###[个人博客](www.imqian.top)

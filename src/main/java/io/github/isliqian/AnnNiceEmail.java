@@ -10,11 +10,7 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface AnnNiceEmail {
-    /**
-     * 被使用
-     * @return
-     */
-    Class inUse();
+
 
     /**
      * 主题
@@ -40,12 +36,12 @@ public @interface AnnNiceEmail {
      * @return
      */
     @Deprecated
-    String text() default "no text";
+    String text() default "";
 
     /**
      * 超文本
      * @return
      */
     @Deprecated
-    String html() default "no html";
+    String html() default "";
 }

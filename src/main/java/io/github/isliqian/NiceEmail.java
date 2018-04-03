@@ -8,11 +8,9 @@ import javax.mail.internet.*;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static io.github.isliqian.VerificationCode.verificationCodeArrary;
+
 
 /**
  * Created by LiQian_Nice on 2018/3/13
@@ -34,63 +32,10 @@ public class NiceEmail {
 
 
 
-    public NiceEmail(){
-
-    }
-    public static NiceEmail inUse(Class c) throws InvocationTargetException, IllegalAccessException {
-        NiceEmail niceEmail=new NiceEmail();
-        AnnNiceConfig config= (AnnNiceConfig) c.getAnnotation(AnnNiceConfig.class);
-        System.out.println(config);
-        for (Method method : config.annotationType().getDeclaredMethods()) {
-            if (!method.isAccessible()) {
-                method.setAccessible(true);
-            }
-            Object invoke = method.invoke(config);
-            if ("type".equals(method.getName())) {
-                type = (String) invoke;
-            }else if ("username".equals(method.getName())){
-                username=(String)invoke;
-            }else if ("password".equals(method.getName())){
-                password=(String)invoke;
-            }
-            System.out.println("invoke methd " + method.getName() + " result:" + invoke);
-            /**
-             * 判断多个Class使用自定义注解
-             */
-            if (invoke.getClass().isArray()) {
-                Object[] temp = (Object[]) invoke;
-                for (Object o : temp) {
-                    System.out.println(o);
-                }
-            }
-        }
-        if (type.equals("SMTP_QQ")){
-            config(NiceEmail.SMTP_QQ(),username,password);
-        }
-        return niceEmail;
+    private NiceEmail(){
 
     }
 
-    /**
-     * 解析自定义注解方法体
-     * @param c1
-     */
-    public static void send( Class<?> c1) throws InvocationTargetException, IllegalAccessException, MessagingException {
-        for(Method m:c1.getDeclaredMethods()){
-            //  getDeclaredMethods    including public, protected, default (package) access, and private methods, but excluding inherited methods.
-            AnnNiceEmail uc=m.getAnnotation(AnnNiceEmail.class);
-            if(uc !=null){
-                System.out.println("Found Use Case:inUse= "+uc.inUse()+"from= "+uc.from()+"subject="+uc.subject()+"to="+uc.to()+"html="+uc.html()+"text="+uc.text());
-                NiceEmail.inUse(uc.inUse())
-                        .subject(uc.subject())
-                        .from(uc.from())
-                        .to(uc.to())
-                        .text(uc.text())
-                        .html(uc.html())
-                        .send();
-            }
-        }
-    }
     public static Properties defaultConfig() {
         //1.创建连接对象，连接到邮箱服务器
         Properties props=new Properties();
@@ -135,7 +80,69 @@ public class NiceEmail {
         props.put("mail.smtp.host", "smtp.163.com");
         return props;
     }
+    public static NiceEmail inUse(Class c) throws InvocationTargetException, IllegalAccessException {
+        NiceEmail niceEmail=new NiceEmail();
+        AnnNiceConfig config= (AnnNiceConfig) c.getAnnotation(AnnNiceConfig.class);
+        System.out.println(config);
+        for (Method method : config.annotationType().getDeclaredMethods()) {
+            if (!method.isAccessible()) {
+                method.setAccessible(true);
+            }
+            Object invoke = method.invoke(config);
+            if ("type".equals(method.getName())) {
+                type = (String) invoke;
+            }else if ("username".equals(method.getName())){
+                username=(String)invoke;
+            }else if ("password".equals(method.getName())){
+                password=(String)invoke;
+            }
+            System.out.println("invoke methd " + method.getName() + " result:" + invoke);
+            /**
+             * 判断多个Class使用自定义注解
+             */
+            if (invoke.getClass().isArray()) {
+                Object[] temp = (Object[]) invoke;
+                for (Object o : temp) {
+                    System.out.println(o);
+                }
+            }
+        }
+        if (type.equals("SMTP_QQ")){
+            config(NiceEmail.SMTP_QQ(),username,password);
+        }
+        return niceEmail;
 
+    }
+
+    /**
+     * 解析自定义注解方法体
+     * @param c1
+     */
+    public static void send( Class<?> c1) throws InvocationTargetException, IllegalAccessException, MessagingException {
+        inUse(c1);
+        for(Method m:c1.getDeclaredMethods()){
+            //  getDeclaredMethods    including public, protected, default (package) access, and private methods, but excluding inherited methods.
+            AnnNiceEmail uc=m.getAnnotation(AnnNiceEmail.class);
+            if(uc !=null){
+                System.out.println("Found Use Case:from= "+uc.from()+"subject="+uc.subject()+"to="+uc.to()+"html="+uc.html()+"text="+uc.text());
+                if (uc.html()==null||uc.html().equals("")){
+                    NiceEmail.subject(uc.subject())
+                            .from(uc.from())
+                            .to(uc.to())
+                            .text(uc.text())
+                            .send();
+                }else {
+                    NiceEmail.subject(uc.subject())
+                            .from(uc.from())
+                            .to(uc.to())
+                            .html(uc.html())
+                            .send();
+                }
+
+
+            }
+        }
+    }
     /**
      * config username and password
      *
@@ -297,40 +304,7 @@ public class NiceEmail {
         bodyPart.setContent(html, "text/html; charset=utf-8");
         return bodyPart;
     }
-    // 获取应该在多少秒后
-    public static long getTaskTime(int shi,int fen) {
-        DateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        // 当前时分秒字符串切成数组
-        String[] sArr = sdf.format(new Date()).split(":");
-        // 从数组取值换算成 秒计数值
-        long currentMiao = (Integer.parseInt(sArr[0]) *60*60) + (Integer.parseInt(sArr[1]) *60)
-                + Integer.parseInt(sArr[2]);
-        // 设定的执行时间换算成 秒计数值
-        long runTime = (shi*60*60 + fen*60);
 
-        if (currentMiao <= runTime) {
-            return runTime - currentMiao;
-        } else {
-            return currentMiao + (24*60*60) - (currentMiao - runTime);
-        }
-    }
-    public  void waitTimeSend(int shi,int fen) {
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            // 把run方法里的内容换成要运行的代码
-            public void run() {
-                try {
-                    send();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    System.out.println("当前的系统时间为：" + sdf.format(new Date()));
-                    timer.cancel();
-                } catch (MessagingException e) {
-                    e.printStackTrace();
-                }
 
-            }
-        }, getTaskTime(shi,fen) *1000, 24*60*60*1000);
-
-    }
 
 }
