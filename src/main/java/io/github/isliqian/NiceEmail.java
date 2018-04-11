@@ -26,7 +26,7 @@ public class NiceEmail {
     private static String type;
     private static String username;
     private static String password;
-    public static String code;
+    private static String code;
 
     private List<MimeBodyPart> attachments = new ArrayList<MimeBodyPart>();
 
@@ -224,6 +224,7 @@ public class NiceEmail {
 
 
     public NiceEmail verificationCode(int size,String[] type)  {
+        /*this.code=null;*/
         this.code = VerificationCode.code(size,type);
         this.text="您的验证码为:"+ code;
         return this;
