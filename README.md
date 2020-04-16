@@ -1,15 +1,17 @@
 ## NiceEmail - 3.0.0
-支持各种功能的邮件发送库
-## 特性
-- [x] 简洁的邮件发送API
-- [x] 支持自定义发件人昵称
-- [x] 支持邮箱发送验证码
-- [x] 支持发送HTML/附件
-- [x] 支持异步发送
-- [x] 自定义注解，更加简单方便
-## 如何使用
+Mail sending library supporting various functions
 
-maven坐标
+## characteristic
+ - [x] Simple email sending API
+ - [x] Support custom sender nickname
+ - [x] Support email to send verification code
+ - [x] Support sending HTML / attachments
+ - [x] Support asynchronous sending
+ - [x] Custom annotations, more simple and convenient
+ 
+## how to use
+
+maven coordinates
 
     <dependency>
         <groupId>io.github.isliqian</groupId>
@@ -17,7 +19,7 @@ maven坐标
         <version>3.0.0</version>
     </dependency>
 
-样例
+Sample
 
           
            
@@ -91,12 +93,14 @@ maven坐标
            
            
            
-### 新特性 
-自定义注解如何使用 **@AnnNiceConfig** + **@AnnNiceEmail** 
+### New features
+ 
+How to use **@AnnNiceConfig** + **@AnnNiceEmail**
+
     
     
     @AnnNiceConfig(type = "SMTP_QQ",
-         username = "51103942@qq.com",
+         username = "jatin777@qq.com",
          password = "jtmoybnwknrnbjha")
     public class TestAnnEmail {
  
@@ -121,10 +125,8 @@ maven坐标
  
      }
     }
-###注意
-在使用验证码的时候，如果第一次输入错误，下次发送会将位数加倍。。。。                 
-###[个人博客](www.imqian.top)
-作者 51103942@qq.com             
-          
-
+             
+### Note that when using the verification code, 
+if the first input is incorrect, the next transmission will double the number of digits. . . .
+### personal blog author 51103942@qq.com
     
